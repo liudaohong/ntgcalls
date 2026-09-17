@@ -1,0 +1,47 @@
+name: Build Android AAR
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-aar:
+    name: Build Android AAR
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Install Python dependencies
+        run: |
+          python3 -m pip install setuptools
+
+      - name: Build Native Android Library
+        run: |
+          python3 setup.py build_lib --target=android
+
+      - name: Assemble Android AAR
+        run: |
+          cd targets/android
+          chmod +x gradlew
+          ./gradlew assembleRelease
+
+      - name: Upload AAR Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ntgcalls-release-aar
+          path: targets/android/app/build/outputs/aar/*.aar
+          if-no-files-found: error
