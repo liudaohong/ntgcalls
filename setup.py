@@ -190,7 +190,7 @@ class CMakeBuild(build_ext):
 
 TARGETS_DIR = Path(base_path, 'targets')
 ARCH_OVERRIDES = {
-    'android': ['arm64-v8a', 'armeabi-v7a', 'x86', 'x86_64'],
+    'android': ['arm64-v8a', 'x86_64'],
 }
 DEFAULT_TARGET = 'c'
 
